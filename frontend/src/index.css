@@ -1,0 +1,1370 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* ─────────────────────────────────────────────
+   DAISYUI THEME — Desert Sage (linen defaults)
+───────────────────────────────────────────── */
+@plugin "daisyui/theme" {
+  name: "mytheme";
+  default: true;
+  color-scheme: light;
+
+  --color-base-100: #F5EDE0;
+  --color-base-200: #D4C7AC;
+  --color-base-300: #B8A88A;
+  --color-base-content: #4A3F35;
+
+  --color-primary: #D08770;
+  --color-primary-content: #4A3F35;
+
+  --color-secondary: #5C6B5C;
+  --color-secondary-content: #F5EDE0;
+
+  --color-accent: #A8654F;
+  --color-neutral: #4A3F35;
+  --color-neutral-content: #F5EDE0;
+
+  --radius-box: 0.75rem;
+  --border: 1px;
+}
+
+/* ─────────────────────────────────────────────
+   TAILWIND V4 THEME EXTENSION
+───────────────────────────────────────────── */
+@theme {
+  --color-sage-deep:          #3D4A3D;
+  --color-sage:               #5C6B5C;
+  --color-sage-soft:          #8A9A8A;
+  --color-espresso:           #4A3F35;
+  --color-espresso-soft:      #6B5D4F;
+  --color-taupe:              #B8A88A;
+  --color-taupe-light:        #D4C7AC;
+  --color-cream:              #E8D5B7;
+  --color-canvas:             #F5EDE0;
+  --color-terracotta-soft:    #E5B5A0;
+  --color-terracotta:         #D08770;
+  --color-terracotta-deep:    #A8654F;
+
+  --color-state-success-bg:     #DCE5D2;
+  --color-state-success-accent: #7A8C5C;
+  --color-state-success-text:   #3D4A2A;
+  --color-state-warning-bg:     #F0E0C2;
+  --color-state-warning-accent: #C9A05C;
+  --color-state-warning-text:   #5C4A1F;
+  --color-state-error-bg:       #E8C9BC;
+  --color-state-error-accent:   #B8654A;
+  --color-state-error-text:     #5C2A1F;
+  --color-state-info-bg:        #D5DCDD;
+  --color-state-info-accent:    #6B7A82;
+  --color-state-info-text:      #2A3D45;
+
+  --color-shape-oval:    #A86B5C;
+  --color-shape-round:   #C9A05C;
+  --color-shape-square:  #7A8C5C;
+  --color-shape-heart:   #A89478;
+  --color-shape-oblong:  #7A6B82;
+  --color-shape-diamond: #5C7A82;
+}
+
+/* ─────────────────────────────────────────────
+   CSS CUSTOM PROPERTIES
+───────────────────────────────────────────── */
+:root {
+  /* Foundation tokens */
+  --sage-deep:       #3D4A3D;
+  --sage:            #5C6B5C;
+  --sage-soft:       #8A9A8A;
+  --espresso:        #4A3F35;
+  --espresso-soft:   #6B5D4F;
+  --taupe:           #B8A88A;
+  --taupe-light:     #D4C7AC;
+  --cream:           #E8D5B7;
+  --canvas:          #F5EDE0;
+  --terracotta:      #D08770;
+  --terracotta-soft: #E5B5A0;
+  --terracotta-deep: #A8654F;
+
+  /* Semantic states */
+  --state-success-bg:     #DCE5D2;
+  --state-success-accent: #7A8C5C;
+  --state-success-text:   #3D4A2A;
+  --state-warning-bg:     #F0E0C2;
+  --state-warning-accent: #C9A05C;
+  --state-warning-text:   #5C4A1F;
+  --state-error-bg:       #E8C9BC;
+  --state-error-accent:   #B8654A;
+  --state-error-text:     #5C2A1F;
+  --state-info-bg:        #D5DCDD;
+  --state-info-accent:    #6B7A82;
+  --state-info-text:      #2A3D45;
+
+  /* Shape palette */
+  --shape-oval:    #A86B5C;
+  --shape-round:   #C9A05C;
+  --shape-square:  #7A8C5C;
+  --shape-heart:   #A89478;
+  --shape-oblong:  #7A6B82;
+  --shape-diamond: #5C7A82;
+
+  /* Mode-aware aliases — Linen defaults */
+  --bg-page:        var(--canvas);
+  --bg-surface:     #FFFFFF;
+  --text-primary:   var(--espresso);
+  --text-secondary: var(--espresso-soft);
+  --border-subtle:  rgba(184, 168, 138, 0.25);
+  --cta-bg:         var(--terracotta);
+  --cta-text:       var(--canvas);
+
+  /* Elevation shadows */
+  --shadow-card:   0 4px 16px rgba(74, 63, 53, 0.08), 0 1px 3px rgba(74, 63, 53, 0.04);
+  --shadow-modal:  0 12px 32px rgba(74, 63, 53, 0.15), 0 4px 8px rgba(74, 63, 53, 0.08);
+  --shadow-dark-card:  0 4px 16px rgba(0, 0, 0, 0.25);
+  --shadow-dark-modal: 0 12px 32px rgba(0, 0, 0, 0.4);
+  --shadow-light-card: 0 4px 16px rgba(74, 63, 53, 0.08), 0 1px 3px rgba(74, 63, 53, 0.04);
+
+  /* Chat UI aliases (used by aichat-* classes) */
+  --aichat-background: var(--espresso);
+  --aichat-surface:    var(--espresso-soft);
+  --aichat-lightest:   var(--canvas);
+  --aichat-light:      var(--terracotta-soft);
+  --aichat-mid:        var(--terracotta);
+  --aichat-dark:       var(--terracotta-deep);
+  --aichat-darkest:    var(--terracotta-deep);
+  --aichat-pink-light: var(--terracotta-soft);
+  --aichat-pink-mid:   var(--terracotta);
+  --aichat-pink-deep:  var(--terracotta-deep);
+  --aichat-border-faint: rgba(208, 135, 112, 0.22);
+  --aichat-border-light: rgba(208, 135, 112, 0.35);
+  --aichat-border-mid:   rgba(208, 135, 112, 0.65);
+  --aichat-border-pink:  rgba(208, 135, 112, 0.35);
+  --aichat-shadow-sm: var(--shadow-dark-card);
+  --aichat-shadow-md: var(--shadow-dark-modal);
+}
+
+/* ─────────────────────────────────────────────
+   EARTHEN MODE OVERRIDES
+───────────────────────────────────────────── */
+[data-theme="earthen"] {
+  --bg-page:        var(--espresso);
+  --bg-surface:     var(--espresso-soft);
+  --text-primary:   var(--canvas);
+  --text-secondary: rgba(232, 213, 183, 0.8);
+  --border-subtle:  rgba(184, 168, 138, 0.2);
+  --cta-bg:         var(--terracotta);
+  --cta-text:       var(--espresso);
+}
+
+/* ─────────────────────────────────────────────
+   GLOBAL FOCUS RINGS (WCAG AA)
+───────────────────────────────────────────── */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(208, 135, 112, 0.3);
+}
+
+[data-theme="earthen"] :focus-visible {
+  box-shadow: 0 0 0 3px rgba(208, 135, 112, 0.4);
+}
+
+/* ─────────────────────────────────────────────
+   STATE BANNER UTILITIES
+───────────────────────────────────────────── */
+.state-warning {
+  background: var(--state-warning-bg);
+  border-left: 3px solid var(--state-warning-accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--state-warning-text);
+  padding: 12px 16px;
+}
+.state-warning--dark {
+  background: rgba(201, 160, 92, 0.15);
+  border-left: 3px solid var(--state-warning-accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--canvas);
+  padding: 12px 16px;
+}
+.state-success {
+  background: var(--state-success-bg);
+  border-left: 3px solid var(--state-success-accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--state-success-text);
+  padding: 12px 16px;
+}
+.state-error {
+  background: var(--state-error-bg);
+  border-left: 3px solid var(--state-error-accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--state-error-text);
+  padding: 12px 16px;
+}
+.state-info {
+  background: var(--state-info-bg);
+  border-left: 3px solid var(--state-info-accent);
+  border-radius: 0 8px 8px 0;
+  color: var(--state-info-text);
+  padding: 12px 16px;
+}
+
+/* ─────────────────────────────────────────────
+   NAVBAR
+───────────────────────────────────────────── */
+.navbar-root {
+  background-color: var(--canvas);
+  border-bottom: 1px solid rgba(184, 168, 138, 0.25);
+  box-shadow: var(--shadow-card);
+}
+.navbar-ghost-btn { color: var(--espresso); }
+
+.navbar-dropdown-menu {
+  background-color: var(--canvas);
+  border: 1px solid rgba(184, 168, 138, 0.3);
+  box-shadow: var(--shadow-modal);
+}
+.navbar-link {
+  color: var(--espresso-soft);
+  transition: color 150ms ease;
+}
+.navbar-link:hover { color: var(--espresso); }
+
+.navbar-cta-btn {
+  background-color: var(--terracotta);
+  color: var(--espresso);
+  border: none;
+  transition: background-color 200ms ease;
+}
+.navbar-cta-btn:hover { background-color: var(--terracotta-deep); }
+
+.navbar-signin-link {
+  color: var(--espresso);
+  transition: color 150ms ease;
+}
+.navbar-signin-link:hover { color: var(--terracotta); }
+
+.navbar-avatar {
+  background-color: var(--sage);
+  color: var(--canvas);
+}
+.navbar-dropdown-item {
+  color: var(--espresso-soft);
+  transition: background-color 150ms ease;
+}
+.navbar-dropdown-item:hover { background-color: var(--taupe-light); }
+
+.navbar-dropdown-divider { border-color: rgba(184, 168, 138, 0.25); }
+
+.navbar-logout-btn {
+  color: var(--state-error-accent);
+  transition: background-color 150ms ease;
+}
+.navbar-logout-btn:hover { background-color: var(--taupe-light); }
+
+.navbar-btn-outline {
+  color: var(--sage);
+  border-color: var(--sage);
+}
+.navbar-btn-terracotta {
+  background-color: var(--terracotta);
+  color: var(--espresso);
+  border: none;
+  transition: background-color 200ms ease;
+}
+.navbar-btn-terracotta:hover { background-color: var(--terracotta-deep); }
+
+/* ─────────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────────── */
+.footer-root {
+  background-color: var(--sage-deep);
+  border-top: 1px solid rgba(232, 213, 183, 0.1);
+}
+.footer-text { color: rgba(232, 213, 183, 0.8); }
+.footer-brand { color: var(--terracotta-soft); }
+.footer-nav-heading {
+  color: var(--sage-soft);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+}
+.footer-link {
+  color: rgba(232, 213, 183, 0.7);
+  transition: color 150ms ease;
+}
+.footer-link:hover { color: var(--terracotta-soft); }
+.footer-divider { border-top: 1px solid rgba(232, 213, 183, 0.1); }
+.footer-copyright { color: rgba(232, 213, 183, 0.5); }
+
+/* ─────────────────────────────────────────────
+   AUTH PAGE — inputs & keyframes (moved from component)
+───────────────────────────────────────────── */
+.auth-input {
+  width: 100%;
+  padding: 11px 12px 11px 40px;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: system-ui, sans-serif;
+}
+.dark-side .auth-input {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(208, 135, 112, 0.25);
+  color: var(--canvas);
+}
+.dark-side .auth-input::placeholder { color: rgba(232, 213, 183, 0.35); }
+.dark-side .auth-input:focus {
+  border-color: rgba(208, 135, 112, 0.6);
+  box-shadow: 0 0 0 3px rgba(208, 135, 112, 0.1);
+}
+.light-side .auth-input {
+  background: var(--canvas);
+  border: 1px solid rgba(208, 135, 112, 0.22);
+  color: var(--espresso);
+}
+.light-side .auth-input::placeholder { color: rgba(74, 63, 53, 0.35); }
+.light-side .auth-input:focus {
+  border-color: rgba(208, 135, 112, 0.55);
+  box-shadow: 0 0 0 3px rgba(208, 135, 112, 0.12);
+}
+.auth-input-pr { padding-right: 40px; }
+
+@keyframes floatA {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50%       { transform: translateY(-14px) rotate(-5deg); }
+}
+@keyframes floatB {
+  0%, 100% { transform: translateY(0) rotate(4deg); }
+  50%       { transform: translateY(-10px) rotate(6deg); }
+}
+
+/* Auth layout */
+.auth-page-left  { background-color: var(--espresso); }
+.auth-page-right { background-color: var(--canvas); }
+
+/* Decorative orbs */
+.auth-orb-top {
+  position: absolute;
+  width: 480px; height: 480px;
+  top: -160px; left: 50%;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(208, 135, 112, 0.12) 0%, transparent 70%);
+}
+.auth-orb-bottom {
+  position: absolute;
+  width: 280px; height: 280px;
+  bottom: -80px; left: 5%;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(107, 93, 79, 0.08) 0%, transparent 70%);
+}
+
+/* Decorative floating letters */
+.auth-deco-s {
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-weight: 300;
+  line-height: 1; user-select: none; pointer-events: none;
+  font-size: 140px; top: -10px; left: -10px;
+  color: rgba(208, 135, 112, 0.07);
+  animation: floatA 9s ease-in-out infinite;
+}
+.auth-deco-p {
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-weight: 300;
+  line-height: 1; user-select: none; pointer-events: none;
+  font-size: 120px; bottom: -20px; right: -8px;
+  color: rgba(208, 135, 112, 0.06);
+  animation: floatB 11s ease-in-out infinite 2s;
+}
+
+/* Back links */
+.auth-back-link-dark {
+  color: rgba(245, 237, 224, 0.5);
+  transition: color 150ms ease;
+}
+.auth-back-link-dark:hover { color: var(--canvas); }
+.auth-back-link-light { color: rgba(74, 63, 53, 0.6); }
+
+/* Left-panel text */
+.auth-deco-line {
+  width: 40px; height: 1px;
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, var(--terracotta), transparent);
+}
+.auth-deco-eyebrow {
+  color: rgba(208, 135, 112, 0.6);
+  letter-spacing: 0.15em;
+  font-size: 11px;
+}
+.auth-headline {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  color: var(--canvas);
+}
+.auth-headline em { color: var(--terracotta-soft); font-style: italic; }
+.auth-tagline { color: rgba(245, 237, 224, 0.58); }
+.auth-stat-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  color: var(--terracotta-soft);
+}
+.auth-stat-label { color: rgba(245, 237, 224, 0.6); }
+
+/* Right-panel header */
+.auth-eyebrow  { color: rgba(208, 135, 112, 0.7); }
+.auth-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.9rem;
+  font-style: italic;
+  color: var(--espresso);
+}
+.auth-subtitle { color: rgba(74, 63, 53, 0.65); }
+.auth-header-divider {
+  width: 36px; height: 1px;
+  margin: 12px auto 0;
+  background: linear-gradient(90deg, transparent, var(--terracotta-soft), transparent);
+}
+
+/* Tab toggle */
+.auth-tab-bar { background: rgba(208, 135, 112, 0.1); }
+.auth-tab-btn { transition: background 200ms ease, color 200ms ease, box-shadow 200ms ease; }
+.auth-tab-active {
+  background: rgba(245, 237, 224, 0.8);
+  color: var(--espresso);
+  font-weight: 600;
+  box-shadow: var(--shadow-card);
+}
+.auth-tab-inactive {
+  background: transparent;
+  color: rgba(74, 63, 53, 0.45);
+  font-weight: 400;
+}
+
+/* Buttons */
+.auth-submit-btn {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  background: var(--terracotta);
+  color: var(--canvas);
+  transition: background 0.2s, transform 0.15s;
+}
+.auth-submit-btn:hover {
+  background: var(--terracotta-deep);
+  transform: translateY(-1px);
+}
+.auth-reset-btn {
+  padding: 9px 20px;
+  border: none; border-radius: 10px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  background: var(--terracotta);
+  color: var(--canvas);
+  transition: background 0.2s;
+}
+.auth-reset-btn:hover { background: var(--terracotta-deep); }
+
+/* Misc text colours */
+.auth-forgot-link  { color: var(--terracotta); }
+.auth-cancel-link  { color: rgba(74, 63, 53, 0.6); }
+.auth-footer-note  { color: rgba(74, 63, 53, 0.55); }
+.auth-footer-toggle { color: var(--terracotta); }
+.auth-error-text   { color: var(--state-error-accent); }
+.auth-hint-text    { color: rgba(74, 63, 53, 0.45); }
+.auth-password-toggle { color: rgba(74, 63, 53, 0.5); }
+.auth-input-icon   { color: rgba(208, 135, 112, 0.6); }
+.auth-label        { color: rgba(74, 63, 53, 0.7); }
+.auth-label--dark  { color: rgba(232, 213, 183, 0.6); }
+
+/* ─────────────────────────────────────────────
+   ANALYSIS CARD (3-D tilt card)
+───────────────────────────────────────────── */
+.analysis-card-perspective { perspective: 900px; }
+
+.analysis-card-wrapper {
+  background: var(--espresso-soft);
+  border: 1px solid rgba(184, 168, 138, 0.25);
+  transform-style: preserve-3d;
+  will-change: transform;
+  box-shadow: var(--shadow-dark-card);
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s ease;
+}
+.analysis-card-wrapper:hover { box-shadow: var(--shadow-dark-modal); }
+
+.analysis-card-inner-bg { background: var(--espresso-soft); }
+
+.analysis-card-img-overlay {
+  background: linear-gradient(rgba(74, 63, 53, 0), rgba(74, 63, 53, 0.25));
+}
+.analysis-card-foil {
+  mix-blend-mode: overlay;
+  z-index: 20;
+}
+.analysis-card-title { color: var(--canvas); }
+.analysis-card-desc  { color: var(--cream); opacity: 0.7; }
+
+/* ─────────────────────────────────────────────
+   HOW IT WORKS SECTION
+───────────────────────────────────────────── */
+.hiw-section { background-color: var(--canvas); }
+
+.hiw-bg-orb-tl {
+  position: absolute; top: 0; left: 25%;
+  width: 24rem; height: 24rem;
+  border-radius: 9999px; pointer-events: none; opacity: 0.6;
+  background: radial-gradient(circle, rgba(184, 168, 138, 0.25) 0%, transparent 70%);
+}
+.hiw-bg-orb-br {
+  position: absolute; bottom: 0; right: 25%;
+  width: 20rem; height: 20rem;
+  border-radius: 9999px; pointer-events: none; opacity: 0.5;
+  background: radial-gradient(circle, rgba(184, 168, 138, 0.18) 0%, transparent 70%);
+}
+.hiw-heading { color: var(--espresso); }
+.hiw-subtext { color: var(--espresso-soft); }
+
+.hiw-connector {
+  position: absolute; top: 56px; left: 22%; right: 22%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--taupe) 20%, var(--taupe) 80%, transparent);
+}
+.hiw-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(184, 168, 138, 0.3);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.3s ease;
+}
+.hiw-card:hover { box-shadow: var(--shadow-modal); }
+
+.hiw-card-hover-overlay {
+  background: linear-gradient(135deg, rgba(229, 181, 160, 0.15) 0%, transparent 60%);
+}
+.hiw-step-number    { color: var(--taupe); }
+.hiw-icon-container { background-color: var(--taupe-light); }
+.hiw-icon-color     { color: var(--espresso-soft); }
+.hiw-tag {
+  background-color: rgba(184, 168, 138, 0.15);
+  color: var(--espresso-soft);
+}
+.hiw-title { color: var(--espresso); }
+.hiw-desc  { color: var(--espresso-soft); }
+.hiw-bottom-line {
+  height: 3px;
+  background: linear-gradient(90deg, var(--terracotta-soft), var(--terracotta));
+}
+
+/* ─────────────────────────────────────────────
+   FEATURES HIGHLIGHT SECTION
+───────────────────────────────────────────── */
+.features-section  { background-color: var(--espresso); }
+.features-eyebrow  { color: var(--sage-soft); }
+.features-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-style: italic;
+  color: var(--canvas);
+}
+.features-subtext  { color: var(--cream); opacity: 0.6; }
+.features-divider {
+  width: 48px; height: 1px;
+  margin: 20px auto 0;
+  background: linear-gradient(90deg, transparent, var(--terracotta-soft), transparent);
+}
+.features-card {
+  background: rgba(245, 237, 224, 0.05);
+  border: 1px solid rgba(184, 168, 138, 0.2);
+  box-shadow: var(--shadow-dark-card);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.features-card:hover {
+  box-shadow: var(--shadow-dark-modal);
+  border-color: rgba(184, 168, 138, 0.35);
+  transform: translateY(-4px);
+}
+.features-number    { color: rgba(184, 168, 138, 0.45); }
+.features-card-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.1rem;
+  color: var(--canvas);
+}
+.features-card-desc { color: var(--cream); opacity: 0.65; }
+
+/* ─────────────────────────────────────────────
+   CTA SECTION
+───────────────────────────────────────────── */
+.cta-img-overlay {
+  background: linear-gradient(to top, var(--canvas), transparent);
+}
+.cta-section            { background-color: var(--canvas); }
+.cta-heading-secondary  { color: var(--espresso-soft); }
+.cta-heading            { color: var(--espresso); }
+.cta-subtext            { color: var(--espresso-soft); }
+.cta-outline-btn {
+  color: var(--espresso);
+  border-color: var(--espresso-soft);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.cta-outline-btn:hover {
+  background-color: var(--espresso);
+  color: var(--canvas);
+}
+.cta-stats {
+  background-color: white;
+  border: 1px solid rgba(184, 168, 138, 0.25);
+}
+.cta-stat-value { color: var(--espresso); }
+.cta-stat-desc  { color: var(--espresso-soft); }
+
+/* ─────────────────────────────────────────────
+   DISCOVER STYLE / TESTIMONIALS
+───────────────────────────────────────────── */
+.testimonials-section  { background-color: var(--taupe-light); }
+.testimonials-heading  { color: var(--espresso); }
+.testimonials-subtext  { color: var(--espresso-soft); }
+.testimonial-card {
+  border: 0.5px solid rgba(184, 149, 111, 0.25);
+  box-shadow: var(--shadow-light-card);
+}
+.discover-cta-section  { background-color: var(--canvas); }
+.discover-cta-heading  { color: var(--espresso); }
+.discover-cta-subtext  { color: var(--espresso-soft); }
+.discover-outline-btn {
+  color: var(--espresso);
+  border-color: var(--espresso-soft);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.discover-outline-btn:hover {
+  background-color: var(--espresso);
+  color: var(--canvas);
+}
+.discover-modal-signin-btn {
+  background-color: var(--espresso-soft);
+  color: var(--canvas);
+  transition: background-color 0.2s ease;
+}
+.discover-modal-signin-btn:hover { background-color: var(--espresso); }
+.discover-modal-note   { color: rgba(74, 63, 53, 0.55); }
+.discover-modal-link   { color: var(--espresso-soft); }
+
+/* ─────────────────────────────────────────────
+   ANALYZE PAGE
+───────────────────────────────────────────── */
+.analyze-page      { background-color: var(--espresso); }
+.analyze-eyebrow   { color: var(--sage-soft); }
+.analyze-heading   { color: var(--canvas); }
+.analyze-subtext   { color: var(--cream); opacity: 0.7; }
+.analyze-grid-perspective { perspective: 1200px; }
+.analyze-footer-text { color: var(--sage-soft); }
+.analyze-results-btn {
+  background: rgba(208, 135, 112, 0.15);
+  border: 1px solid rgba(208, 135, 112, 0.4);
+  color: var(--terracotta-soft);
+}
+
+/* ─────────────────────────────────────────────
+   PROFILE PAGE
+───────────────────────────────────────────── */
+.profile-bg-blob-tr {
+  position: absolute; top: -8rem; right: -8rem;
+  width: 24rem; height: 24rem;
+  border-radius: 9999px; opacity: 0.5;
+  background: radial-gradient(circle, rgba(212, 199, 172, 0.45) 0%, transparent 70%);
+}
+.profile-bg-blob-bl {
+  position: absolute; bottom: -8rem; left: -8rem;
+  width: 24rem; height: 24rem;
+  border-radius: 9999px; opacity: 0.4;
+  background: radial-gradient(circle, rgba(212, 199, 172, 0.45) 0%, transparent 70%);
+}
+.profile-bg-blob-center {
+  position: absolute; top: 50%; left: 50%;
+  width: 16rem; height: 16rem;
+  border-radius: 9999px; opacity: 0.2;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(184, 168, 138, 0.35) 0%, transparent 70%);
+}
+.profile-avatar {
+  background: linear-gradient(135deg, var(--taupe-light) 0%, var(--taupe) 100%);
+  color: var(--espresso);
+}
+.profile-progress-bar {
+  background: linear-gradient(90deg, var(--taupe-light), var(--taupe));
+}
+.profile-cta-box {
+  background-color: var(--taupe-light);
+  border: 1px solid rgba(184, 168, 138, 0.3);
+}
+.profile-cta-icon-bg { background-color: rgba(184, 168, 138, 0.3); }
+.profile-cta-sparkle { color: var(--taupe); }
+.profile-cta-link {
+  background: linear-gradient(135deg, var(--taupe) 0%, var(--terracotta-soft) 100%);
+}
+.profile-spinner { color: var(--terracotta-soft); }
+.profile-info-value { color: var(--espresso); }
+.profile-trait-empty-value { color: rgba(184, 168, 138, 0.5); }
+.profile-trait-filled-value { color: var(--espresso); }
+
+/* ─────────────────────────────────────────────
+   LOADING SCREEN
+───────────────────────────────────────────── */
+.aichat-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--espresso);
+}
+
+.aichat-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--terracotta);
+  border-top-color: transparent;
+  border-radius: 9999px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─────────────────────────────────────────────
+   PAGE SHELL
+───────────────────────────────────────────── */
+.aichat-page {
+  min-height: 100vh;
+  padding-top: 80px;
+  position: relative;
+  overflow: hidden;
+  background: var(--espresso);
+}
+
+.aichat-inner {
+  position: relative;
+  z-index: 10;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.aichat-grid {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .aichat-grid {
+    grid-template-columns: 1fr 3fr;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   BACKGROUND ORBS (very subtle, no glow)
+───────────────────────────────────────────── */
+.aichat-orbs-wrapper {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.aichat-orb {
+  position: absolute;
+  border-radius: 9999px;
+}
+
+.aichat-orb--1 {
+  top: -160px; right: -160px;
+  width: 500px; height: 500px;
+  opacity: 0.15;
+  background: radial-gradient(circle, rgba(208,135,112,0.18) 0%, transparent 65%);
+}
+
+.aichat-orb--2 {
+  bottom: -160px; left: -160px;
+  width: 400px; height: 400px;
+  opacity: 0.12;
+  background: radial-gradient(circle, rgba(138,154,138,0.15) 0%, transparent 65%);
+}
+
+.aichat-orb--3 {
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px; height: 600px;
+  opacity: 0.08;
+  background: radial-gradient(ellipse, rgba(184,168,138,0.15) 0%, transparent 60%);
+}
+
+/* ─────────────────────────────────────────────
+   PAGE ACCENT LINES (no glow — simple gradient)
+───────────────────────────────────────────── */
+.aichat-border {
+  position: fixed;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.aichat-border--top {
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(208,135,112,0.4), transparent);
+}
+
+.aichat-border--bottom {
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(208,135,112,0.2), transparent);
+}
+
+.aichat-border--left {
+  top: 0; left: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(208,135,112,0.2), transparent);
+}
+
+.aichat-border--right {
+  top: 0; right: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(208,135,112,0.2), transparent);
+}
+
+/* ─────────────────────────────────────────────
+   SHARED CARD BASE
+───────────────────────────────────────────── */
+.aichat-sidebar-card {
+  background-color: var(--espresso-soft);
+  border: 1px solid rgba(184, 168, 138, 0.25);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-dark-card);
+}
+
+.aichat-panel-glow {
+  box-shadow: var(--shadow-dark-modal);
+}
+
+.aichat-sidebar-glow {
+  box-shadow: var(--shadow-dark-card);
+}
+
+.aichat-card-top-line {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(208,135,112,0.4), transparent);
+}
+
+/* ─────────────────────────────────────────────
+   SIDEBAR
+───────────────────────────────────────────── */
+.aichat-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── AI Assistant Card ── */
+.aichat-assistant-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px;
+}
+
+.aichat-avatar-ring {
+  width: 96px;
+  height: 96px;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  position: relative;
+  outline: 2px solid var(--terracotta);
+  outline-offset: 2px;
+}
+
+.aichat-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.aichat-avatar-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--terracotta-deep), transparent);
+  opacity: 0.25;
+}
+
+.aichat-assistant-name {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--canvas);
+}
+
+.aichat-assistant-role {
+  font-size: 12px;
+  color: var(--terracotta-soft);
+}
+
+.aichat-online-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.aichat-online-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #7A8C5C;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.aichat-online-dot--lg {
+  width: 8px;
+  height: 8px;
+}
+
+.aichat-online-label {
+  font-size: 10px;
+  color: var(--sage-soft);
+}
+
+/* ── Profile Card ── */
+.aichat-profile-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 16px 0;
+}
+
+.aichat-profile-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 12px;
+  background: rgba(208, 135, 112, 0.2);
+  border: 1px solid rgba(208, 135, 112, 0.35);
+}
+
+.aichat-profile-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  text-align: center;
+  color: var(--canvas);
+  padding-bottom: 12px;
+}
+
+.aichat-traits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 20px 20px;
+}
+
+.aichat-trait-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.aichat-trait-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--terracotta-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.aichat-trait-value {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+  padding: 4px 12px;
+  border-radius: 16px;
+  letter-spacing: 0.3px;
+  transition: background 200ms ease;
+}
+
+.aichat-trait-value-empty {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--sage-soft);
+  font-style: italic;
+  padding: 4px 8px;
+}
+
+.aichat-profile-empty {
+  font-size: 12px;
+  text-align: center;
+  padding: 0 16px 20px;
+  color: var(--sage-soft);
+  font-weight: 500;
+}
+
+.aichat-profile-footer {
+  margin-top: 8px;
+  padding: 14px 20px;
+  border-top: 1px solid rgba(184, 168, 138, 0.2);
+}
+
+.aichat-profile-footer-text {
+  font-size: 11px;
+  text-align: center;
+  color: var(--sage-soft);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* ─────────────────────────────────────────────
+   CHAT PANEL
+───────────────────────────────────────────── */
+.aichat-chat-panel {
+  background-color: var(--espresso-soft);
+  border: 1px solid rgba(184, 168, 138, 0.25);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  height: calc(100vh - 120px);
+  box-shadow: var(--shadow-dark-modal);
+}
+
+/* ── Chat Header ── */
+.aichat-chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(184, 168, 138, 0.2);
+  background-color: rgba(74, 63, 53, 0.95);
+  flex-shrink: 0;
+}
+
+.aichat-header-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 16px;
+  overflow: hidden;
+  outline: 1px solid var(--terracotta);
+  flex-shrink: 0;
+}
+
+.aichat-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.aichat-header-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--canvas);
+}
+
+.aichat-header-sub {
+  font-size: 11px;
+  color: var(--sage-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aichat-header-badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  background-color: rgba(208, 135, 112, 0.15);
+  color: var(--terracotta-soft);
+  border: 0.5px solid rgba(208, 135, 112, 0.35);
+}
+
+/* ── Messages area ── */
+.aichat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #5A4D42;
+}
+
+/* ── Message rows ── */
+.aichat-message-row {
+  display: flex;
+  gap: 12px;
+}
+
+.aichat-message-row--user {
+  flex-direction: row-reverse;
+}
+
+/* ── Message avatars ── */
+.aichat-message-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  margin-top: 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aichat-message-avatar--assistant {
+  background: linear-gradient(135deg, var(--terracotta), var(--terracotta-deep));
+}
+
+.aichat-message-avatar--user {
+  background: linear-gradient(135deg, var(--terracotta-deep), var(--terracotta));
+}
+
+.aichat-user-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--canvas);
+}
+
+/* ── Message bubbles ── */
+.aichat-message-bubble {
+  max-width: 78%;
+  border-radius: 16px;
+  padding: 10px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-line;
+  box-shadow: var(--shadow-dark-card);
+}
+
+.aichat-message-bubble--user {
+  background: var(--terracotta);
+  color: var(--espresso);
+  border-bottom-right-radius: 6px;
+  font-weight: 500;
+}
+
+.aichat-message-bubble--assistant {
+  background-color: var(--espresso-soft);
+  color: var(--canvas);
+  border: 0.5px solid rgba(184, 168, 138, 0.25);
+  border-bottom-left-radius: 6px;
+}
+
+.aichat-message-assistant:hover,
+.aichat-message-user:hover {
+  transition: none;
+}
+
+/* ── Typing indicator ── */
+.aichat-typing-bubble {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 16px;
+  padding: 10px 16px;
+  background-color: var(--espresso-soft);
+  border: 0.5px solid rgba(184, 168, 138, 0.25);
+}
+
+.aichat-typing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: var(--terracotta);
+}
+
+.aichat-typing-label {
+  font-size: 11px;
+  margin-left: 4px;
+  color: var(--sage-soft);
+}
+
+/* ─────────────────────────────────────────────
+   SUGGESTED PROMPTS
+───────────────────────────────────────────── */
+.aichat-prompts-section {
+  padding: 10px 24px 12px;
+  border-top: 1px solid rgba(184, 168, 138, 0.2);
+  background-color: rgba(74, 63, 53, 0.9);
+  flex-shrink: 0;
+}
+
+.aichat-prompts-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--sage-soft);
+}
+
+.aichat-prompts-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.aichat-prompt-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(208, 135, 112, 0.4);
+  color: var(--canvas);
+  background-color: rgba(208, 135, 112, 0.12);
+  transition: all 200ms ease;
+  cursor: pointer;
+}
+
+.aichat-prompt-chip--hovered,
+.aichat-prompt-chip:hover {
+  background-color: rgba(208, 135, 112, 0.22);
+  border-color: var(--terracotta);
+  transform: translateY(-1px);
+}
+
+.aichat-prompt-icon {
+  width: 12px;
+  height: 12px;
+  color: var(--terracotta-soft);
+}
+
+/* ─────────────────────────────────────────────
+   INPUT AREA
+───────────────────────────────────────────── */
+.aichat-input-footer {
+  padding: 14px 24px;
+  border-top: 1px solid rgba(184, 168, 138, 0.2);
+  background-color: rgba(74, 63, 53, 0.95);
+  flex-shrink: 0;
+}
+
+.aichat-input-wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  border-radius: 16px;
+  padding: 10px 16px;
+  background-color: rgba(245, 237, 224, 0.06);
+  border: 1px solid rgba(184, 168, 138, 0.3);
+  transition: border-color 200ms ease;
+}
+
+.aichat-input-focused {
+  border-color: var(--terracotta) !important;
+  box-shadow: 0 0 0 3px rgba(208, 135, 112, 0.25) !important;
+}
+
+.aichat-textarea {
+  flex: 1;
+  background: transparent;
+  resize: none;
+  outline: none;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--canvas);
+  max-height: 120px;
+}
+
+.aichat-textarea::placeholder {
+  color: rgba(232, 213, 183, 0.5);
+}
+
+/* ── Send button ── */
+.aichat-send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 200ms ease;
+}
+
+.aichat-send-btn--active {
+  background: var(--terracotta);
+}
+
+.aichat-send-btn--active:hover {
+  background: var(--terracotta-deep);
+}
+
+.aichat-send-btn--disabled {
+  background-color: rgba(245, 237, 224, 0.06);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.aichat-send-button-active {
+  background: var(--terracotta);
+}
+
+.aichat-send-icon {
+  width: 16px;
+  height: 16px;
+  color: rgba(232, 213, 183, 0.5);
+}
+
+.aichat-send-icon--active {
+  color: var(--espresso);
+}
+
+.aichat-input-hint {
+  font-size: 11px;
+  margin-top: 8px;
+  text-align: center;
+  color: var(--sage-soft);
+}
+
+/* ─────────────────────────────────────────────
+   AI AVATAR
+───────────────────────────────────────────── */
+.aichat-ai-avatar {
+  transition: transform 200ms ease;
+}
+
+.aichat-ai-avatar:hover {
+  transform: scale(1.05);
+}
+
+/* ─────────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────────── */
+.scrollbar-thin::-webkit-scrollbar         { width: 6px; }
+.scrollbar-thin::-webkit-scrollbar-track   { background: rgba(184,168,138,0.2); border-radius: 10px; }
+.scrollbar-thin::-webkit-scrollbar-thumb   { background: rgba(208,135,112,0.4); border-radius: 10px; transition: background 200ms ease; }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(208,135,112,0.7); }
+
+/* ─────────────────────────────────────────────
+   PULSE ANIMATION
+───────────────────────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

@@ -1,0 +1,137 @@
+[
+  {
+    "category": "top",
+    "label": "black fitted t-shirt",
+    "bounding_box": [
+      0.03,
+      0.06,
+      0.22,
+      0.26
+    ],
+    "confidence": 0.95,
+    "color": "black",
+    "silhouette": "fitted",
+    "pattern": "solid",
+    "material_texture": "cotton"
+  },
+  {
+    "category": "top",
+    "label": "white graphic hoodie",
+    "bounding_box": [
+      0.22,
+      0.04,
+      0.53,
+      0.28
+    ],
+    "confidence": 0.95,
+    "color": "white",
+    "silhouette": "oversized",
+    "pattern": "graphic",
+    "material_texture": "cotton"
+  },
+  {
+    "category": "bottom",
+    "label": "light wash wide-leg jeans",
+    "bounding_box": [
+      0.03,
+      0.26,
+      0.27,
+      0.62
+    ],
+    "confidence": 0.95,
+    "color": "light blue",
+    "silhouette": "wide-leg",
+    "pattern": "solid",
+    "material_texture": "denim"
+  },
+  {
+    "category": "shoes",
+    "label": "white leather sneakers",
+    "bounding_box": [
+      0.04,
+      0.62,
+      0.31,
+      0.73
+    ],
+    "confidence": 0.95,
+    "color": "white",
+    "silhouette": null,
+    "pattern": "solid",
+    "material_texture": "leather"
+  },
+  {
+    "category": "bag",
+    "label": "black quilted shoulder bag",
+    "bounding_box": [
+      0.37,
+      0.28,
+      0.54,
+      0.41
+    ],
+    "confidence": 0.95,
+    "color": "black",
+    "silhouette": null,
+    "pattern": "quilted",
+    "material_texture": "leather"
+  },
+  {
+    "category": "hat",
+    "label": "white headband",
+    "bounding_box": [
+      0.26,
+      0.28,
+      0.36,
+      0.39
+    ],
+    "confidence": 0.9,
+    "color": "white",
+    "silhouette": null,
+    "pattern": "solid",
+    "material_texture": "plastic"
+  },
+  {
+    "category": "necklace",
+    "label": "gold heart pendant necklace",
+    "bounding_box": [
+      0.29,
+      0.41,
+      0.41,
+      0.61
+    ],
+    "confidence": 0.9,
+    "color": "gold",
+    "silhouette": null,
+    "pattern": null,
+    "material_texture": "metal"
+  },
+  {
+    "category": "earrings",
+    "label": "gold heart stud earrings",
+    "bounding_box": [
+      0.45,
+      0.58,
+      0.54,
+      0.65
+    ],
+    "confidence": 0.9,
+    "color": "gold",
+    "silhouette": null,
+    "pattern": null,
+    "material_texture": "metal"
+  },
+  {
+    "category": "watch",
+    "label": "gold link watch",
+    "bounding_box": [
+      0.5,
+      0.41,
+      0.55,
+      0.51
+    ],
+    "confidence": 0.9,
+    "color": "gold",
+    "silhouette": null,
+    "pattern": null,
+    "material_texture": "metal"
+  }
+]
