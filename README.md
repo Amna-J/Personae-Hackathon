@@ -292,17 +292,6 @@ Exit code is `0` only if all stages pass. Outputs go to `backend/test_output/` (
 - `StyleCheckView` uses the same `score_all_items_with_color_fallback()` matcher as the e2e test, so endpoint results are consistent with the direct pipeline stages.
 - Chained VTO is a single synchronous request; run `python manage.py runserver` on a machine with network access to Groq/YouCam.
 
-
-## 🎥 Demo
-
-Watch the full end-to-end demo on YouTube:
-
-[▶️ Personae — AI Fashion Stylist Demo]("https://youtu.be/GNyuqUbPpi8")
-
-The demo shows the complete user experience, including profile analysis,
-moodboard analysis, outfit matching, and YouCam-powered virtual try-on.
-
-
 ## 💡 Consumer & Retail Value
 
 ### For Consumers
