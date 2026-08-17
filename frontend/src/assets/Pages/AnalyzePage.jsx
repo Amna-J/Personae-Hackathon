@@ -39,6 +39,26 @@ const CARDS = [
       <img src={FACE_SHAPES_GUIDE} alt="Face shapes guide" className="w-full h-full object-cover object-top" />
     ),
   },
+  {
+    path: "/moodboard-check",
+    title: "Moodboard Style Check",
+    description: "Upload a moodboard and see every item scored against your style profile — with a virtual try-on",
+    content: (
+      <div className="w-full h-full grid grid-cols-3 grid-rows-2 gap-1.5 p-3"
+        style={{ background: "linear-gradient(160deg, rgba(208,135,112,0.16), rgba(138,154,138,0.12))" }}>
+        {["#D08770", "#8A9A8A", "#B8A88A", "#E5B5A0", "#A8654F", "#D4C7AC"].map((c, i) => (
+          <div key={i} className="rounded-lg flex items-center justify-center"
+            style={{ background: `linear-gradient(145deg, ${c} 0%, ${c}CC 100%)`, border: "1px solid rgba(245,237,224,0.25)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.15)" }}>
+            {i === 4 && (
+              <span className="text-[8px] font-bold uppercase tracking-widest" style={{ color: "rgba(245,237,224,0.9)" }}>
+                Match
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    ),
+  },
 ];
 
 const AnalyzePage = () => {

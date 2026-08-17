@@ -209,7 +209,7 @@ const UploadCard = ({ previewUrl, isAnalyzing, showCamera, videoRef, error, file
 );
 
 /* ─── Result Panel ───────────────────────────────────────────────── */
-const ResultPanel = ({ result, resultData, resultTone, allScores, saving, saved, onSave, onViewFullRecommendations }) => {
+const ResultPanel = ({ result, resultData, resultTone, allScores, saving, saved, onSave, onViewFullRecommendations, crossCheck }) => {
   return (
     <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="space-y-5">
 
@@ -265,6 +265,43 @@ const ResultPanel = ({ result, resultData, resultTone, allScores, saving, saved,
           )}
         </div>
       </div>
+
+      {/* YouCam cross-check note — supporting signal, never the recommendation source */}
+      {crossCheck && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.15 }}
+          className="rounded-2xl px-5 py-4"
+          style={{ background: "rgba(212,165,116,0.08)", border: "1px solid rgba(212,165,116,0.25)", borderLeft: "3px solid rgba(212,165,116,0.6)" }}
+        >
+          <div className="flex items-start gap-3">
+            <Sparkles className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "rgba(232,180,100,0.8)" }} />
+            <div className="text-xs leading-relaxed" style={{ color: "rgba(240,200,140,0.8)" }}>
+              {crossCheck.status === "ok" ? (
+                crossCheck.skin_tone?.toLowerCase() === result ? (
+                  <p>
+                    <span style={{ fontWeight: 700 }}>YouCam cross-check:</span> confirms{" "}
+                    <span style={{ color: "var(--canvas)", fontWeight: 700 }}>{resultData.title}</span> skin tone · undertone read:{" "}
+                    <span style={{ color: "var(--canvas)", fontWeight: 700 }}>{crossCheck.undertone}</span> · YouCam's skin color:{" "}
+                    {crossCheck.skin_color_hex}
+                  </p>
+                ) : (
+                  <p>
+                    <span style={{ fontWeight: 700 }}>YouCam cross-check:</span> YouCam's read is {crossCheck.skin_tone}{" "}
+                    (Personae's model: {resultData.title}). Personae's read is used for recommendations · undertone read:{" "}
+                    {crossCheck.undertone} · YouCam's skin color: {crossCheck.skin_color_hex}
+                  </p>
+                )
+              ) : crossCheck.status === "disabled" ? (
+                <p><span style={{ fontWeight: 700 }}>YouCam cross-check:</span> disabled for this build — Personae's model result stands.</p>
+              ) : (
+                <p><span style={{ fontWeight: 700 }}>YouCam cross-check:</span> unavailable for this photo (face not detected or service error) — Personae's model result stands.</p>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Recommendations card */}
       <div className="relative rounded-3xl overflow-hidden" style={{ background: "linear-gradient(145deg, rgba(249,237,232,0.06) 0%, rgba(249,237,232,0.02) 100%)", border: "1px solid rgba(220,110,80,0.18)", boxShadow: "0 16px 48px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,220,200,0.07)", backdropFilter: "blur(10px)" }}>
@@ -365,6 +402,7 @@ const SkinTonePage = () => {
   const [saved, setSaved]                   = useState(false);
   const [saving, setSaving]                 = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [crossCheck, setCrossCheck]         = useState(null);
 
   const fileInputRef = useRef(null);
   const videoRef     = useRef(null);
@@ -402,13 +440,13 @@ const SkinTonePage = () => {
     const file = e.target.files[0];
     if (!file) return;
     setPreviewUrl(URL.createObjectURL(file));
-    setResult(null); setError(null); setConfidence(null); setAllScores(null); setSaved(false);
+    setResult(null); setError(null); setConfidence(null); setAllScores(null); setSaved(false); setCrossCheck(null);
     await sendToAPI(file);
   };
 
   const sendToAPI = async (file) => {
     setIsAnalyzing(true);
-    setResult(null); setError(null); setConfidence(null); setAllScores(null); setSaved(false);
+    setResult(null); setError(null); setConfidence(null); setAllScores(null); setSaved(false); setCrossCheck(null);
     try {
       const formData = new FormData();
       formData.append("image", file);
@@ -419,6 +457,7 @@ const SkinTonePage = () => {
       setResult(detectedTone);
       setConfidence(data.confidence);
       setAllScores(data.all_scores);
+      setCrossCheck(data.youcam_cross_check || null);
       // Store in localStorage so JewelryRecommendations can also read it as fallback
       localStorage.setItem("detected_skin_tone", detectedTone);
     } catch (err) { setError(err.message); }
@@ -497,6 +536,7 @@ const SkinTonePage = () => {
                     saved={saved}
                     onSave={saveToProfile}
                     onViewFullRecommendations={handleViewFullRecommendations}
+                    crossCheck={crossCheck}
                   />
                 : <ToneGuide key="guide" />}
             </AnimatePresence>

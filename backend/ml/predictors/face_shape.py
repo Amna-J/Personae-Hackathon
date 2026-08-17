@@ -26,13 +26,23 @@ class EfficientNetPreprocess(keras.layers.Layer):
     def call(self, x):
         return tf.keras.applications.efficientnet.preprocess_input(x)
 
-effnet_model = tf.keras.models.load_model(
-    str(EFFNET_PATH),
-    custom_objects={"EfficientNetPreprocess": EfficientNetPreprocess}
-)
+# Loaded lazily on first predict so the app still starts without the trained
+# weights (they are deliberately not part of the repo).
+effnet_model = None
+try:
+    effnet_model = tf.keras.models.load_model(
+        str(EFFNET_PATH),
+        custom_objects={"EfficientNetPreprocess": EfficientNetPreprocess}
+    )
+except (OSError, FileNotFoundError, ValueError) as exc:
+    print(f"Face-shape EfficientNet model unavailable (weights not present?): {exc}")
 
 # --- SVM ---
-svm_model = joblib.load(str(SVM_PATH))
+svm_model = None
+try:
+    svm_model = joblib.load(str(SVM_PATH))
+except (OSError, FileNotFoundError) as exc:
+    print(f"Face-shape SVM model unavailable (weights not present?): {exc}")
 
 # --- MediaPipe FaceLandmarker (optional) ---
 try:
@@ -47,7 +57,7 @@ try:
         )
     )
     _MP_AVAILABLE = True
-except ImportError:
+except Exception:
     _MP_AVAILABLE = False
 
 
@@ -96,6 +106,11 @@ def _extract_landmarks(img_rgb: np.ndarray) -> dict | None:
 
 
 def predict_face_shape(image_file):
+    if effnet_model is None:
+        raise RuntimeError(
+            "Face-shape model is not available. Restore the trained weights "
+            "under ml/models/ — see README."
+        )
     img     = Image.open(image_file).convert("RGB")
     img_rgb = np.array(img)
 

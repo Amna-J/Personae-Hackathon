@@ -18,6 +18,7 @@ import ResultsPage from "./assets/Pages/ResultsPage";
 import StyleDnaPage from './assets/Pages/StyleDnaPage'
 import JewelryRecommendations from './assets/Pages/JewelryRecommendations'
 import MakeupRecommendations from './assets/Pages/MakeupRecommendations'
+import MoodboardCheck from './assets/Pages/MoodboardCheck'
 
 const E = ({ children }) => <div data-theme="earthen">{children}</div>;
 
@@ -48,6 +49,7 @@ function App() {
         <Route path="/Blogs" element={<Blogs />} />
         <Route path="/style-dna" element={<E><StyleDnaPage /></E>} />
         <Route path="/results" element={<E><ResultsPage /></E>} />
+        <Route path="/moodboard-check" element={<E><MoodboardCheck /></E>} />
       </Route>
 
       {/* PAGES WITHOUT NAVBAR + FOOTER */}

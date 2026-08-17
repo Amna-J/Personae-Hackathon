@@ -6,9 +6,20 @@ from pathlib import Path
 MODEL_PATH = Path(__file__).resolve().parent.parent / "models"
 CLASS_NAMES = ["cool", "neutral", "warm"]  
 
-model = tf.keras.models.load_model(str(MODEL_PATH))
+# Loaded lazily on first predict so the app still starts without the trained
+# weights (they are deliberately not part of the repo).
+model = None
+try:
+    model = tf.keras.models.load_model(str(MODEL_PATH))
+except (OSError, FileNotFoundError, ValueError) as exc:
+    print(f"Undertone model unavailable (weights not present?): {exc}")
 
 def predict_undertone(image_file):
+    if model is None:
+        raise RuntimeError(
+            "Undertone model is not available. Restore the trained weights "
+            "under ml/models/ — see README."
+        )
     img = Image.open(image_file).convert("RGB").resize((224, 224))
     # Pass raw pixels (0-255) — model handles normalization internally
     arr = np.expand_dims(np.array(img), axis=0).astype("float32")

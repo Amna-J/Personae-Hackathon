@@ -23,6 +23,11 @@ const CARD_THEMES = {
     color: "var(--taupe)",
     tagBg: "rgba(184, 168, 138, 0.18)",
   },
+  "/moodboard-check": {
+    tag: "Style Check",
+    color: "var(--terracotta-soft)",
+    tagBg: "rgba(208, 135, 112, 0.18)",
+  },
 };
 
 const AnalysisCard = ({ path, title, description, content }) => {

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import json
+import logging
 import os
 import re
 import sys
@@ -11,6 +12,8 @@ from dotenv import load_dotenv
 from groq import Groq
 
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env"))
+
+logger = logging.getLogger(__name__)
 
 
 MODEL_NAME = "qwen/qwen3.6-27b"
@@ -96,12 +99,22 @@ def _strip_markdown_fences(response_text: str) -> str:
     cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned)
     cleaned = re.sub(r"\s*```$", "", cleaned)
 
-    # Extract JSON array
+    return cleaned
+
+
+def _extract_bracketed_json(cleaned: str) -> str:
+    """Last-resort fallback: slice from the first "[" to the last "]".
+
+    Only used when json.loads() on the fence-stripped text fails entirely
+    (e.g. genuine markdown fence pollution or trailing prose). This must NOT
+    run on successfully-parsed output: a valid single-item object under
+    Groq's json_object mode contains arrays (bounding_box), and naive bracket
+    slicing would truncate the whole response down to that one array.
+    """
     start = cleaned.find("[")
     end = cleaned.rfind("]")
     if start != -1 and end != -1 and end > start:
-        cleaned = cleaned[start : end + 1]
-
+        return cleaned[start : end + 1]
     return cleaned
 
 
@@ -160,15 +173,36 @@ def decompose_moodboard(image_path_or_bytes: str | bytes) -> list[dict]:
 
     try:
         parsed = json.loads(_strip_markdown_fences(text))
-    except json.JSONDecodeError as exc:
-        raise ValueError(f"Groq response was not valid JSON: {exc}") from exc
+    except json.JSONDecodeError as direct_exc:
+        # Direct parse failed entirely — only now fall back to naive bracket
+        # slicing (genuine fence pollution / trailing prose).
+        try:
+            parsed = json.loads(_extract_bracketed_json(_strip_markdown_fences(text)))
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"Groq response was not valid JSON: {exc}") from direct_exc
+
+    if isinstance(parsed, dict):
+        # Single-item collapse under Groq's json_object mode: the model emitted
+        # one item object instead of a one-element array.
+        parsed = [parsed]
 
     if not isinstance(parsed, list):
         raise ValueError(
             f"Groq response was not a JSON array. Received: {type(parsed).__name__}"
         )
 
-    return parsed
+    valid_items = []
+    for element in parsed:
+        category = element.get("category") if isinstance(element, dict) else None
+        if not isinstance(element, dict) or not isinstance(category, str) or not category.strip():
+            logger.warning(
+                "Dropping non-item element from decompose_moodboard output: "
+                "type=%s value=%r (expected a dict with a non-empty string 'category')",
+                type(element).__name__, element,
+            )
+            continue
+        valid_items.append(element)
+    return valid_items
 
 
 if __name__ == "__main__":

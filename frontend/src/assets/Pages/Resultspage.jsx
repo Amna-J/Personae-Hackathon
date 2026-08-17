@@ -402,6 +402,26 @@ const ResultsPage = () => {
             ) : null
           )}
         </div>
+
+        {/* ── Moodboard check CTA ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+          className="text-center"
+          style={{ marginTop: 40 }}
+        >
+          <button
+            onClick={() => navigate("/moodboard-check")}
+            className="btn border-none"
+            style={{ backgroundColor: "var(--terracotta)", color: "var(--canvas)", padding: "12px 28px", fontSize: 14, fontWeight: 600 }}
+          >
+            Check a Moodboard Against My Style
+          </button>
+          <p className="text-gray-600 text-sm mt-3">
+            Upload a flat-lay moodboard plus a full-length photo of yourself — Personae scores each item and renders the matching garment on your photo.
+          </p>
+        </motion.div>
       </div>
     </div>
   );

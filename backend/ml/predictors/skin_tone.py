@@ -9,7 +9,13 @@ CLASS_NAMES = ["black", "dark", "fair", "medium"]
 IMG_SIZE    = (299, 299)
 PADDING     = 0.30
 
-model        = tf.keras.models.load_model(str(MODEL_PATH))
+# Loaded lazily on first predict so the app still starts without the trained
+# weights (they are deliberately not part of the repo).
+model = None
+try:
+    model = tf.keras.models.load_model(str(MODEL_PATH))
+except (OSError, FileNotFoundError, ValueError) as exc:
+    print(f"Skin-tone model unavailable (weights not present?): {exc}")
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
 
@@ -44,6 +50,11 @@ def preprocess(img_rgb: np.ndarray) -> np.ndarray:
 
 
 def predict_skin_tone(image_file):
+    if model is None:
+        raise RuntimeError(
+            "Skin-tone model is not available. Restore the trained weights "
+            "under ml/models/ — see README."
+        )
     img     = Image.open(image_file).convert("RGB")
     img_rgb = np.array(img)
     cropped = crop_face(img_rgb)

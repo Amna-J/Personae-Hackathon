@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Send, User, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AIassistant from "../AIassistant.jpg";
@@ -15,7 +16,33 @@ const suggestedPrompts = [
   "Accessories for my style",
 ];
 
-const AIchat = ({ recommendationContext = null }) => {
+/**
+ * @param {{
+ *   [key: string]: any,
+ *   itemVerdicts?: Array<{
+ *     category: string,
+ *     label: string,
+ *     color?: string,
+ *     silhouette?: string,
+ *     verdict: {
+ *       matches: boolean,
+ *       confidence: number,
+ *       matched_criteria: string[],
+ *       mismatched_criteria: string[],
+ *       reasoning: string,
+ *     },
+ *     passes_threshold: boolean,
+ *   }>,
+ * }} recommendationContext Optional style-profile fields (rendered as a
+ *     "Recommendation context" block) plus an optional itemVerdicts array
+ *     matching item_matcher.py's score_all_items output. When itemVerdicts is
+ *     present a separate "Item verdicts" block is added so the assistant can
+ *     explain real match/reject reasoning instead of re-deriving it.
+ */
+const AIchat = ({ recommendationContext: recommendationContextProp = null }) => {
+  const location = useLocation();
+  const recommendationContext =
+    location.state?.recommendationContext ?? recommendationContextProp;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -78,22 +105,65 @@ const AIchat = ({ recommendationContext = null }) => {
     if (body_type && body_type !== "-") traits.push(`Body type: ${body_type}`);
     if (face_shape && face_shape !== "-") traits.push(`Face shape: ${face_shape}`);
 
+    const itemVerdicts = recommendationContext?.itemVerdicts;
+
     const recommendationBlock = recommendationContext
       ? `
 Recommendation context:
 ${Object.entries(recommendationContext)
-  .filter(([, value]) => value !== undefined && value !== null && value !== "")
+  .filter(
+    ([key, value]) =>
+      key !== "itemVerdicts" &&
+      value !== undefined &&
+      value !== null &&
+      value !== ""
+  )
   .map(([key, value]) => `${key}: ${value}`)
   .join("\n")}`
       : "";
 
+    const verdictsBlock =
+      itemVerdicts && itemVerdicts.length
+        ? `
+
+Item verdicts (items from the user's moodboard, already scored against the style profile):
+${itemVerdicts
+  .map((item) => {
+    const verdict = item.verdict || {};
+    const status = item.passes_threshold ? "PASS" : "REJECT";
+    const attrs = [item.color, item.silhouette].filter(Boolean).join(", ");
+    const lines = [
+      `${status} (confidence ${verdict.confidence ?? "?"}) | ` +
+        `${item.category || "item"} — ${item.label || "unnamed"}${attrs ? ` (${attrs})` : ""}`,
+    ];
+    const matched = Array.isArray(verdict.matched_criteria)
+      ? verdict.matched_criteria
+      : [];
+    const mismatched = Array.isArray(verdict.mismatched_criteria)
+      ? verdict.mismatched_criteria
+      : [];
+    if (matched.length) {
+      lines.push(`  Matched: ${matched.join("; ")}`);
+    }
+    if (mismatched.length) {
+      lines.push(`  Mismatched: ${mismatched.join("; ")}`);
+    }
+    if (verdict.reasoning) {
+      lines.push(`  Reasoning: ${verdict.reasoning}`);
+    }
+    return lines.join("\n");
+  })
+  .join("\n\n")}`
+        : "";
+
     return `You are Personae, an AI personal stylist for ${username || "the user"}.
 
 Style profile:
-${traits.length ? traits.join("\n") : "Not yet fully analyzed."}${recommendationBlock}
+${traits.length ? traits.join("\n") : "Not yet fully analyzed."}${recommendationBlock}${verdictsBlock}
 
 Guidelines:
 - Base all recommendations on the style profile above.
+- If the item verdicts block is present, treat it as ground truth for which moodboard items already passed or failed the styling match. When the user asks why an item did or did not work (e.g. "why didn't the blue jeans work?"), answer using that item's matched/mismatched criteria and reasoning exactly as provided — do not re-derive new reasoning from scratch or invent criteria the verdict doesn't mention. A REJECT is final for the current moodboard; you can explain why it was rejected and what would work instead.
 - Emotions should be handeled by fashion advice, not by directly referencing emotions. For example, instead of saying "I understand you might feel self-conscious about your body type," say "For your body type, I recommend A-line dresses and high-waisted pants to create a balanced silhouette."
 - Body type: suggest silhouettes and cuts that flatter their shape.
 - Skin undertone and tone: recommend specific color palettes suited to their complexion.

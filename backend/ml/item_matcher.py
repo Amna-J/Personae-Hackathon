@@ -29,6 +29,25 @@ Judge primarily on: does the item's color fall within the recommended colors (no
 Be moderately strict: a color adjacent to the recommended palette (e.g. a slightly warmer shade within a described category) can still score reasonably well, but a color explicitly on the avoid list should score low regardless of other factors. Do not output any text outside the JSON object.
 """
 
+_COLOR_FALLBACK_SYSTEM_PROMPT = """
+You are a color-fit judge. You are given a single fashion item's color and a person's skin tone and undertone.
+
+This color is NOT listed in the person's explicitly recommended or avoid colors, so you must judge it on first principles for THIS skin tone and undertone — do not try to map it onto those lists.
+
+Respond with ONLY a JSON object with these fields:
+- "matches": true or false
+- "confidence": a float between 0 and 1
+- "matched_criteria": a short list of specific ways this color works for this skin tone/undertone (e.g. "warm beige flatters a warm undertone")
+- "mismatched_criteria": a short list of specific ways it conflicts, if any (e.g. "too pale washes out a fair, cool complexion")
+- "reasoning": one or two plain-language sentences a non-technical user could read as an explanation
+
+Be moderately strict: a color that clearly clashes with the undertone or washes out the skin tone should score low; a color that broadly harmonizes should score reasonably well. Do not output any text outside the JSON object.
+"""
+
+# Splits fuzzy recommendation color lists ("Earth Tones, Olive, Coral, ...")
+# into individual color phrases for coverage detection.
+_COLOR_TOKEN_SPLIT_RE = re.compile(r"[,;]")
+
 
 def _strip_markdown_fences(text: str) -> str:
     cleaned = text.strip()
@@ -56,20 +75,19 @@ def _get_client() -> Groq:
         raise RuntimeError(f"Failed to initialise Groq client: {exc}") from exc
 
 
-def score_item_against_recommendation(item: dict, recommendation: dict) -> dict:
-    client = _get_client()
+def _request_verdict_json(system_prompt: str, user_message: str) -> dict:
+    """Run one Groq judge call and return a validated verdict dict.
 
-    user_message = (
-        f"Item: {json.dumps(item, indent=2)}\n\n"
-        f"User's styling recommendation: {json.dumps(recommendation, indent=2)}\n\n"
-        "Judge this match."
-    )
+    Shared by the standard fuzzy item judge and the color-fallback judge so the
+    request/parse/validate behaviour (and its error messages) stays identical.
+    """
+    client = _get_client()
 
     try:
         completion = client.chat.completions.create(
             model=_MODEL,
             messages=[
-                {"role": "system", "content": _SYSTEM_PROMPT},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_message},
             ],
             temperature=0,
@@ -118,6 +136,115 @@ def score_item_against_recommendation(item: dict, recommendation: dict) -> dict:
     return result
 
 
+def score_item_against_recommendation(item: dict, recommendation: dict) -> dict:
+    user_message = (
+        f"Item: {json.dumps(item, indent=2)}\n\n"
+        f"User's styling recommendation: {json.dumps(recommendation, indent=2)}\n\n"
+        "Judge this match."
+    )
+    return _request_verdict_json(_SYSTEM_PROMPT, user_message)
+
+
+def color_is_covered_by_recommendation(color: Any, recommendation: dict) -> bool:
+    """Return True if `color` is mentioned in the fuzzy engine's color lists.
+
+    The recommended/avoid lists are comma-separated phrases (e.g. "Jewel Tones,
+    Icy Blue, Lavender, Silver, Emerald" / "Orange, Mustard, Brown"). Coverage
+    is a deterministic textual heuristic: a color phrase counts as covered when
+    it equals, contains, is contained by, or shares a word with any list entry
+    ("olive green" matches "Olive"; "blue" matches "Icy Blue"; "warm red"
+    matches "Warm Red").
+
+    This drives the LLM color-fallback: uncovered colors get a dedicated LLM
+    judge call instead of a silent pass/reject/guess by the fuzzy engine.
+    """
+    if not isinstance(color, str) or not color.strip():
+        return False
+    if not isinstance(recommendation, dict):
+        return False
+
+    corpus = " ".join(
+        (
+            recommendation.get("recommended_clothing_colors") or "",
+            recommendation.get("avoid_clothing_colors") or "",
+        )
+    )
+    if not corpus.strip():
+        return False
+
+    def _words(text: str) -> set[str]:
+        return {w for w in re.findall(r"[a-z]+", text.lower()) if len(w) > 1}
+
+    color_norm = re.sub(r"\s+", " ", color.strip().lower())
+    color_words = _words(color_norm)
+
+    for raw_token in _COLOR_TOKEN_SPLIT_RE.split(corpus):
+        token_norm = re.sub(r"\s+", " ", raw_token.strip().lower())
+        if not token_norm:
+            continue
+        if token_norm == color_norm:
+            return True
+        if token_norm in color_norm or color_norm in token_norm:
+            return True
+        if color_words & _words(token_norm):
+            return True
+    return False
+
+
+def score_color_match_via_llm(item: dict, recommendation: dict) -> dict:
+    """LLM judge call for an item whose color is NOT in the fuzzy color lists.
+
+    Asks specifically whether the item's color is a reasonable match for the
+    user's skin_tone/under_tone profile, independent of silhouette/pattern.
+    Returns the same verdict schema as score_item_against_recommendation() so
+    the caller can drop it into the pipeline unchanged.
+    """
+    profile = recommendation or {}
+    user_message = (
+        f"Item color: {(item or {}).get('color')!r}\n"
+        f"Person profile — skin_tone: {profile.get('skin_tone')!r}, "
+        f"under_tone: {profile.get('under_tone')!r}\n"
+        f"Recommended colors (for context): "
+        f"{(profile.get('recommended_clothing_colors') or 'n/a')}\n"
+        f"Avoid colors (for context): {(profile.get('avoid_clothing_colors') or 'n/a')}\n\n"
+        "Judge whether this specific color is a reasonable match for this person."
+    )
+    return _request_verdict_json(_COLOR_FALLBACK_SYSTEM_PROMPT, user_message)
+
+
+def score_all_items_with_color_fallback(
+    items: list[dict],
+    recommendation: dict,
+    threshold: float = 0.6,
+) -> list[dict]:
+    """Score items, routing uncovered colors to a dedicated LLM color judge.
+
+    For each item:
+      - if the item's color IS covered by the fuzzy engine's recommended/avoid
+        color lists  → standard score_item_against_recommendation(), tagged
+        verdict["verdict_source"] = "fuzzy_engine"
+      - if it is NOT covered → score_color_match_via_llm(), tagged
+        verdict["verdict_source"] = "llm_color_fallback"
+
+    Every returned item carries the same shape as score_all_items() plus the
+    verdict_source tag, so downstream code (passes_threshold, split, VTO) needs
+    no changes — and callers can count how many verdicts came from each source.
+    """
+    results = []
+    for item in items:
+        color = item.get("color") if isinstance(item, dict) else None
+        if color_is_covered_by_recommendation(color, recommendation):
+            verdict = score_item_against_recommendation(item, recommendation)
+            verdict["verdict_source"] = "fuzzy_engine"
+        else:
+            verdict = score_color_match_via_llm(item, recommendation)
+            verdict["verdict_source"] = "llm_color_fallback"
+        passes = verdict.get("matches", False) and verdict.get("confidence", 0.0) >= threshold
+        augmented = {**item, "verdict": verdict, "passes_threshold": passes}
+        results.append(augmented)
+    return results
+
+
 def score_all_items(
     items: list[dict],
     recommendation: dict,
@@ -158,14 +285,6 @@ if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
     import django
-    from django.conf import settings
-
-    SQLITE_DB = os.path.join(BACKEND_DIR, "db.sqlite3")
-    if os.path.isfile(SQLITE_DB):
-        settings.DATABASES["default"] = {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": SQLITE_DB,
-        }
 
     django.setup()
 
